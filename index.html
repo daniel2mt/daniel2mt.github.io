@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0c0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Rewards Converter</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:#2a2e33;--text:#f2f4f5;--muted:#8b929a;--green:#4ade80;--gbg:rgba(74,222,128,.09);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+html{height:100%;background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:radial-gradient(800px 420px at 50% -8%,#15241b 0,transparent 65%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em;cursor:pointer}
+.logo{width:36px;height:36px;border-radius:11px;background:var(--gbg);border:1px solid rgba(74,222,128,.22);color:var(--green);display:grid;place-items:center}
+.icons{display:flex;gap:8px}
+.ib{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;transition:.18s}
+.ib:hover,.ib.on{color:var(--text);border-color:#3b4149;background:var(--surface2)}
+.ib.sm{width:34px;height:34px;border-radius:10px}
+.view{animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px}
+label{display:block;font-size:.8rem;color:var(--muted);margin:0 0 8px}
+.field{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:0 12px;transition:.18s}
+.field:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--gbg)}
+.field input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);font:inherit;font-size:1.8rem;font-weight:600;padding:14px 0;font-variant-numeric:tabular-nums}
+.field span{color:var(--muted);font-size:.9rem}
+.field.sm{margin-bottom:16px}.field.sm input{font-size:1.15rem;padding:12px 0}
+.x{background:none;border:0;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:6px;border-radius:8px}
+.x:hover{color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.82rem;cursor:pointer;transition:.18s}
+.chip:hover{color:var(--green);border-color:rgba(74,222,128,.4)}
+.res{margin:20px 0 16px;padding:18px;border-radius:16px;background:var(--gbg);border:1px solid rgba(74,222,128,.18)}
+.lbl{font-size:.8rem;color:var(--muted)}
+.val{font-size:clamp(2rem,9vw,2.8rem);font-weight:700;color:var(--green);letter-spacing:-.02em;font-variant-numeric:tabular-nums;word-break:break-word;margin:4px 0}
+.rate{font-size:.82rem;color:var(--muted)}
+.btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;border:0;background:var(--green);color:#06210f;font:inherit;font-weight:650;cursor:pointer;transition:.18s}
+.btn:hover{filter:brightness(1.08)}.btn:disabled{opacity:.35;cursor:not-allowed;filter:none}
+.btn.ghost{background:none;color:var(--text);border:1px solid var(--line)}
+.btn.done{background:#bbf7d0}
+.row{display:grid;gap:10px;margin-top:16px}
+.head{display:flex;justify-content:space-between;align-items:center;margin:0 4px 12px}
+h2{margin:0;font-size:1.1rem}
+.link{background:none;border:0;color:var(--muted);font:inherit;font-size:.9rem;cursor:pointer;padding:6px}
+.link:hover{color:var(--text)}
+.list{padding:6px 18px}
+.it{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.it:last-child{border:0}
+.it small{display:block;color:var(--muted);font-size:.75rem;margin-top:2px}
+.g{color:var(--green);font-weight:650;font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);text-align:center;padding:26px 0}
+.cur{display:flex;justify-content:space-between;gap:8px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+.cur b{color:var(--green)}
+.prev{padding:12px 14px;border-radius:12px;background:var(--surface2);color:var(--muted);font-size:.9rem}
+.prev b{color:var(--text)}.prev small{display:block;margin-top:4px}
+.note{text-align:center;color:var(--muted);font-size:.75rem;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--line);color:var(--text);padding:10px 16px;border-radius:999px;font-size:.9rem;transition:.25s;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+.toast svg{color:var(--green)}.toast.on{opacity:1;transform:translate(-50%,0)}
+.chip i{font-style:normal;font-size:.72rem;color:var(--green);margin-left:6px}
+.sug{margin-top:12px;font-size:.75rem;color:var(--muted)}
+.sug .chips{margin-top:6px}
+.heard{margin-top:10px;font-size:.85rem;color:var(--muted)}
+.mic.rec{color:var(--green);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand" id="home"><div class="logo" data-i="coin"></div>Rewards Converter</div>
+  <div class="icons">
+    <button class="ib" id="bh" aria-label="Histórico" data-i="clock"></button>
+    <button class="ib" id="bs" aria-label="Configurações" data-i="gear"></button>
+  </div>
+</header>
+
+<section id="v-home" class="view">
+  <div class="card">
+    <label for="pts">Pontos do Microsoft Rewards</label>
+    <div class="field">
+      <input id="pts" inputmode="numeric" autocomplete="off" placeholder="0">
+      <button class="x mic" id="mic" aria-label="Falar os pontos" data-i="mic"></button>
+      <button class="x" id="clr" aria-label="Limpar campo" data-i="x" data-s="18" hidden></button>
+      <span>pts</span>
+    </div>
+    <div class="heard" id="heard" hidden></div>
+    <div class="chips" id="chips"></div>
+    <div class="sug" id="sug" hidden>Mais usados por você<div class="chips" id="chips2"></div></div>
+    <div class="res">
+      <div class="lbl">Valor em reais</div>
+      <div class="val" id="val" aria-live="polite">R$ 0,00</div>
+      <div class="rate" id="rate"></div>
+    </div>
+    <button class="btn" id="cp"><span data-i="copy" data-s="18"></span> Copiar resultado</button>
+  </div>
+</section>
+
+<section id="v-hist" class="view" hidden>
+  <div class="head"><h2>Histórico</h2><button class="link" id="hclr">Limpar</button></div>
+  <div class="card list" id="hl"></div>
+</section>
+
+<section id="v-set" class="view" hidden>
+  <div class="head"><h2>Taxa de conversão</h2></div>
+  <div class="card">
+    <div class="cur"><span>Cotação atual</span><b id="cur"></b></div>
+    <label for="sp">Pontos de referência</label>
+    <div class="field sm"><input id="sp" inputmode="numeric" autocomplete="off"><span>pts</span></div>
+    <label for="sb">Valor correspondente em reais</label>
+    <div class="field sm"><span>R$</span><input id="sb" inputmode="decimal" autocomplete="off"></div>
+    <div class="prev" id="prev"></div>
+    <div class="row">
+      <button class="btn" id="save">Salvar alterações</button>
+      <button class="btn ghost" id="reset">Restaurar configuração padrão</button>
+    </div>
+  </div>
+</section>
+
+<p class="note">Seus dados ficam salvos apenas neste navegador.</p>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- Ícones ---------- */
+const P={
+coin:'<circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M9.5 9.5h3.8a1.7 1.7 0 0 1 0 3.4h-2.6a1.7 1.7 0 0 0 0 3.4h3.8"/>',
+clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+gear:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+check:'<path d="M20 6 9 17l-5-5"/>',
+x:'<path d="M18 6 6 18M6 6l12 12"/>',
+mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>'};
+const I=(d,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+document.querySelectorAll('[data-i]').forEach(e=>e.insertAdjacentHTML('afterbegin',I(P[e.dataset.i],+e.dataset.s||20)));
+
+/* ---------- Armazenamento ---------- */
+const mem={};
+const store={
+  get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):(mem[k]??null)}catch(e){return mem[k]??null}},
+  set(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+
+/* ---------- Lógica de conversão ---------- */
+const DEF={pts:5165,brl:30};
+const okRate=r=>!!r&&r.pts>0&&r.brl>0&&isFinite(r.pts)&&isFinite(r.brl);
+// resultado em centavos: pontos × valor de referência ÷ pontos de referência
+const cents=(p,r)=>okRate(r)&&p>=0?Math.round(p*Math.round(r.brl*100)/r.pts):null;
+const nf=n=>n.toLocaleString('pt-BR');
+const brl=c=>(c/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}).replace(/\u00a0/g,' ');
+const rateTxt=r=>`${nf(r.pts)} pts = ${brl(Math.round(r.brl*100))}`;
+const fdate=t=>new Date(t).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+
+/* ---------- Estado ---------- */
+const saved=store.get('rc_rate');
+let rate=okRate(saved)?{pts:saved.pts,brl:saved.brl}:{...DEF};
+let hist=(store.get('rc_hist')||[]).filter(h=>h&&isFinite(h.p)&&isFinite(h.c)&&isFinite(h.t)).slice(0,50);
+let pts=0,timer,cur='home';
+const $=s=>document.querySelector(s);
+
+/* ---------- Utilidades de UI ---------- */
+let tt;
+function toast(msg,err){const t=$('#toast');t.innerHTML=(err?'':I(P.check,16))+'<span></span>';t.lastChild.textContent=msg;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1800)}
+async function copy(txt){
+  try{await navigator.clipboard.writeText(txt);return true}
+  catch(e){try{const a=document.createElement('textarea');a.value=txt;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch(e2){return false}}
+}
+// máscara de milhares mantendo o cursor no lugar
+function maskInt(el){
+  const pos=el.selectionStart??el.value.length;
+  const before=el.value.slice(0,pos).replace(/\D/g,'').length;
+  const d=el.value.replace(/\D/g,'').replace(/^0+(?=\d)/,'').slice(0,12);
+  el.value=d?nf(+d):'';
+  if(document.activeElement===el){let i=0,c=0;while(i<el.value.length&&c<before){if(/\d/.test(el.value[i]))c++;i++}try{el.setSelectionRange(i,i)}catch(e){}}
+  return d?+d:0;
+}
+
+/* ---------- Calculadora ---------- */
+function update(){
+  const c=cents(pts,rate);
+  $('#val').textContent=brl(c??0);
+  $('#rate').textContent='Taxa atual: '+rateTxt(rate);
+  $('#cur').textContent=rateTxt(rate);
+  $('#clr').hidden=!pts;
+  $('#cp').disabled=!pts;
+}
+function record(){
+  clearTimeout(timer);
+  if(!pts)return;
+  const c=cents(pts,rate),h=hist[0];
+  if(c==null||(h&&h.p===pts&&h.c===c))return;
+  hist.unshift({p:pts,c,t:Date.now()});
+  hist=hist.slice(0,50);
+  bump(pts);
+  store.set('rc_hist',hist);
+  renderHist();
+}
+function onPts(){pts=maskInt($('#pts'));update();clearTimeout(timer);timer=setTimeout(record,1500)}
+$('#pts').addEventListener('input',onPts);
+$('#pts').addEventListener('blur',record);
+$('#pts').addEventListener('keydown',e=>{if(e.key==='Enter')record()});
+$('#clr').onclick=()=>{$('#pts').value='';onPts();$('#pts').focus()};
+function setPts(n,sched=true){pts=n;$('#pts').value=n?nf(n):'';update();clearTimeout(timer);if(sched)timer=setTimeout(record,1500)}
+
+/* ---------- Sugestões ---------- */
+const FIXED=[10000,20000,30000,50000,100000,1000000];
+let freq=store.get('rc_freq');
+if(!freq||typeof freq!=='object'||Array.isArray(freq))freq={};
+for(const k of Object.keys(freq))if(!(+k>0)||!(freq[k]>0))delete freq[k];
+function renderChips(){
+  const chip=n=>`<button class="chip" data-v="${n}">${nf(n)}${freq[n]>=2?`<i title="${freq[n]} conversões">×${freq[n]}</i>`:''}</button>`;
+  $('#chips').innerHTML=FIXED.map(chip).join('');
+  const top=Object.keys(freq).map(Number).filter(n=>!FIXED.includes(n)&&freq[n]>=2).sort((a,b)=>freq[b]-freq[a]||b-a).slice(0,4);
+  $('#sug').hidden=!top.length;
+  $('#chips2').innerHTML=top.map(chip).join('');
+}
+function bump(n){
+  freq[n]=(freq[n]||0)+1;
+  const ks=Object.keys(freq);
+  if(ks.length>60)ks.filter(k=>k!=n).sort((a,b)=>freq[a]-freq[b]).slice(0,ks.length-60).forEach(k=>delete freq[k]);
+  store.set('rc_freq',freq);renderChips();
+}
+$('#chips').onclick=$('#chips2').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;$('#pts').value=b.dataset.v;onPts()};
+renderChips();
+
+/* ---------- Voz ---------- */
+const W={zero:0,um:1,uma:1,dois:2,duas:2,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10,onze:11,doze:12,treze:13,quatorze:14,catorze:14,quinze:15,dezesseis:16,dezessete:17,dezoito:18,dezenove:19,vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,setenta:70,oitenta:80,noventa:90,cem:100,cento:100,duzentos:200,trezentos:300,quatrocentos:400,quinhentos:500,seiscentos:600,setecentos:700,oitocentos:800,novecentos:900};
+function speechToNum(t){
+  t=t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/(\d)[\s.](?=\d{3}\b)/g,'$1');
+  let total=0,c=0,found=false;
+  for(const w of t.match(/\d+(?:,\d+)?|[a-z]+/g)||[]){
+    if(/^\d/.test(w)){c+=parseFloat(w.replace(',','.'));found=true}
+    else if(Object.hasOwn(W,w)){c+=W[w];found=true}
+    else if(w==='mil'){total+=(c||1)*1e3;c=0;found=true}
+    else if(w==='milhao'||w==='milhoes'){total+=(c||1)*1e6;c=0;found=true}
+  }
+  return found?Math.min(Math.round(total+c),999999999999):null;
+}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec,on=false;
+function setMic(v){on=v;$('#mic').classList.toggle('rec',v);$('#mic').setAttribute('aria-label',v?'Parar de ouvir':'Falar os pontos')}
+$('#mic').onclick=()=>{
+  if(!SR){toast('Este navegador não suporta entrada por voz. Tente no Chrome ou no Safari.',1);return}
+  if(on){rec.stop();return}
+  rec=new SR();rec.lang='pt-BR';rec.interimResults=true;
+  const h=$('#heard');let got=null,err=0;
+  rec.onstart=()=>{setMic(true);h.hidden=false;h.textContent='Ouvindo… diga a quantidade de pontos'};
+  rec.onresult=e=>{
+    const t=Array.from(e.results,r=>r[0].transcript).join(' ');
+    h.textContent='“'+t.trim()+'”';
+    const n=speechToNum(t);if(n!=null){got=n;setPts(n,false)}
+  };
+  rec.onerror=e=>{err=1;toast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Permita o microfone para falar os pontos':'Não consegui ouvir. Tente de novo.',1)};
+  rec.onend=()=>{
+    setMic(false);
+    if(got!=null){record();setTimeout(()=>{if(!on)h.hidden=true},3000)}
+    else if(err)h.hidden=true;
+    else h.textContent='Não entendi o número. Tente algo como “dez mil pontos”.';
+  };
+  try{rec.start()}catch(e){toast('Não foi possível iniciar o microfone',1)}
+};
+$('#cp').onclick=async()=>{
+  if(!pts)return;
+  const ok=await copy(brl(cents(pts,rate)));
+  if(!ok){toast('Não foi possível copiar');return}
+  record();
+  const b=$('#cp');b.classList.add('done');b.innerHTML=I(P.check,18)+' Copiado';
+  toast('Resultado copiado');
+  setTimeout(()=>{b.classList.remove('done');b.innerHTML=I(P.copy,18)+' Copiar resultado'},1600);
+};
+
+/* ---------- Histórico ---------- */
+function renderHist(){
+  const el=$('#hl');
+  $('#hclr').hidden=!hist.length;
+  if(!hist.length){el.innerHTML='<div class="empty">Nenhuma conversão registrada ainda.</div>';return}
+  el.innerHTML=hist.map((h,i)=>`<div class="it"><div><b>${nf(h.p)} pts</b><small>${fdate(h.t)}</small></div><div class="g">${brl(h.c)}</div><button class="ib sm" data-c="${i}" aria-label="Copiar resultado">${I(P.copy,16)}</button></div>`).join('');
+}
+$('#hl').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-c]');if(!b)return;
+  const h=hist[+b.dataset.c];
+  toast(await copy(brl(h.c))?'Resultado copiado':'Não foi possível copiar');
+});
+let arm;
+$('#hclr').onclick=e=>{
+  const b=e.currentTarget;
+  if(!arm){b.textContent='Toque para confirmar';arm=setTimeout(()=>{arm=0;b.textContent='Limpar'},3000);return}
+  clearTimeout(arm);arm=0;b.textContent='Limpar';
+  hist=[];store.set('rc_hist',hist);renderHist();toast('Histórico limpo');
+};
+
+/* ---------- Configurações ---------- */
+function parseBRL(s){
+  s=s.replace(/[^\d.,]/g,'');
+  if(!s)return NaN;
+  if(!s.includes(',')&&/^\d+\.\d{1,2}$/.test(s))return +s;
+  return +s.replace(/\./g,'').replace(',','.');
+}
+const fmtBRLField=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function checkSet(){
+  const r={pts:+($('#sp').value.replace(/\D/g,'')||0),brl:Math.round(parseBRL($('#sb').value)*100)/100};
+  const ok=r.pts>0&&r.brl>0&&r.brl<=1e6&&isFinite(r.brl);
+  $('#save').disabled=!ok;
+  $('#prev').innerHTML=ok?`Nova taxa: <b>${rateTxt(r)}</b><small>1.000 pts ≈ ${brl(cents(1000,r))}</small>`:'Informe valores maiores que zero nas duas caixas.';
+  return ok?r:null;
+}
+function fillSet(){$('#sp').value=nf(rate.pts);$('#sb').value=fmtBRLField(rate.brl);checkSet()}
+$('#sp').addEventListener('input',()=>{maskInt($('#sp'));checkSet()});
+$('#sb').addEventListener('input',checkSet);
+$('#sb').addEventListener('blur',()=>{const b=parseBRL($('#sb').value);if(b>0&&isFinite(b))$('#sb').value=fmtBRLField(b);checkSet()});
+$('#save').onclick=()=>{
+  const r=checkSet();if(!r)return;
+  rate=r;store.set('rc_rate',rate);update();
+  const b=$('#save');b.classList.add('done');b.textContent='Salvo!';
+  toast('Alterações salvas');
+  setTimeout(()=>{b.classList.remove('done');b.textContent='Salvar alterações'},1500);
+};
+$('#reset').onclick=()=>{rate={...DEF};store.set('rc_rate',rate);fillSet();update();toast('Configuração padrão restaurada')};
+
+/* ---------- Navegação ---------- */
+function show(v){
+  cur=v;
+  for(const k of['home','hist','set'])$('#v-'+k).hidden=k!==v;
+  $('#bh').classList.toggle('on',v==='hist');
+  $('#bs').classList.toggle('on',v==='set');
+  if(v==='set')fillSet();
+  if(v==='hist')renderHist();
+  scrollTo(0,0);
+}
+$('#home').onclick=()=>show('home');
+$('#bh').onclick=()=>show(cur==='hist'?'home':'hist');
+$('#bs').onclick=()=>show(cur==='set'?'home':'set');
+
+update();renderHist();
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
